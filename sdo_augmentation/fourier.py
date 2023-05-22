@@ -5,17 +5,16 @@ import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2 as cv
+import os
 from PIL import Image
 from augmentation import Augmentations
 from augmentation_list import AugmentationList
 
-
-
 def main():
 
     # Read main euv image as normalized grayscale
-    euv_image = Image.open('./data/euv/fd/20120403_000036_aia.lev1_euv_12s_4k.jpg')
-    euv_image = np.array(euv_image.convert('L')) / 255
+    euv_img = Image.open('./data/euv/fd/20120403_000036_aia.lev1_euv_12s_4k.jpg')
+    euv_img = np.array(euv_img.convert('L')) / 255
 
     # Select random pickle image from dataset and normalize it
     pickle_paths = glob.glob('./data/euv/tiles/*.p')
@@ -37,9 +36,6 @@ def main():
     ishift_img = np.fft.ifftshift(faug_img)
     ifft_img = np.fft.ifft2(ishift_img)
     abs_img = np.abs(ifft_img)
-
-    # Show Augmented Image
-    cv.imshow("idft:", np.uint8(abs_img))
 
 
 if __name__ == '__main__':
