@@ -1,7 +1,9 @@
 import numpy as np
 import pickle
-from augmentation_list import AugmentationList
-from augmentation import Augmentations
+import sys
+sys.path.insert(0, '..')
+from sdo_augmentation.augmentation_list import AugmentationList
+from sdo_augmentation.augmentation import Augmentations
 import streamlit as st
 from PIL import Image
 from augmentation_test import read_image
@@ -65,12 +67,13 @@ def apply_augmentation(img, col2, user_dict, cord_tup):
             pad_tuple = (v_padding, h_padding)
 
         padded_img = np.pad(img, pad_tuple,
-                            mode='constant')
+                            mode='edge')
 
         augments = Augmentations(padded_img,
                                  st.session_state['random_init_dict'])
 
-        augmented_img, title = augments.perform_augmentations()
+        augmented_img, title = augments.perform_augmentations(
+            fill_void='Nearest')
 
         # define bounds of crop to match input image
         center_h, center_w = padded_img.shape[0]//2, padded_img.shape[1]//2
@@ -90,11 +93,17 @@ def apply_augmentation(img, col2, user_dict, cord_tup):
 
         augmented_img, title = augments.perform_augmentations()
 
-    else:
+    elif st.session_state['reg_fill'] == 'No':
         augments = Augmentations(img,
                                  st.session_state['random_init_dict'])
 
         augmented_img, title = augments.perform_augmentations()
+
+    else:
+        augments = Augmentations(img,
+                                 st.session_state['random_init_dict'])
+
+        augmented_img, title = augments.perform_augmentations(fill_void='Nearest')
 
     col2.header(title)
     col2.image(augmented_img, use_column_width='always', clamp=True)

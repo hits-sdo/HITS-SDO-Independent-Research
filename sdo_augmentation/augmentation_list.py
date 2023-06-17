@@ -1,8 +1,8 @@
 """TODO add module docstring"""
 
 
-from augmentation import Augmentations
 import random
+from sdo_augmentation.augmentation import Augmentations
 import json
 from collections import Counter
 import matplotlib.pyplot as plt

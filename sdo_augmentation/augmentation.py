@@ -17,6 +17,8 @@ Plan for Mar 10:
 
 import numpy as np
 import cv2 as cv
+import matplotlib.pyplot as plt
+from PIL import Image
 
 
 class Augmentations():
@@ -140,7 +142,7 @@ class Augmentations():
         image = 1 - image
         return image
 
-    def perform_augmentations(self):
+    def perform_augmentations(self, fill_void=None):
         '''
         General function to perform the sequence of augmentation
         defined by the input dictionary in Augmentations class
@@ -148,8 +150,22 @@ class Augmentations():
 
         # Define the input dictionary defining the augmentation sequence
         augmentations_list = list(self.augmentations.keys())
+        epsilon = 0.0001
 
         augment_image = self.image
+
+        if fill_void is not None:
+            if fill_void == 'Nearest':
+                v, h = augment_image.shape[0]//2, augment_image.shape[1]//2
+                if len(augment_image.shape) == 3:
+                    augment_image = np.pad(augment_image, ((v, v), (h, h),
+                                                           (0, 0)),
+                                           'edge')
+                else:
+                    augment_image = np.pad(augment_image, ((v, v), (h, h)),
+                                           'edge')
+            else:
+                augment_image += epsilon
         # Initialize the augmented image title showing
         # the sequence of augmentations
         title = 'Original'
@@ -176,5 +192,41 @@ class Augmentations():
         x2 = s[1]//2 + s1[1]//2
         # central part of the augmented image of size TARGET_SHAPE
         augment_image = augment_image[y1:y2, x1:x2]
+        mask = (augment_image == 0)
+        kernel = np.ones((10, 10), np.uint8)
+        mask = cv.dilate(mask.astype('float'), kernel, iterations=1)
+
+        if fill_void == 'Blur':
+            blurred_image = self.blur(augment_image, (self.image.shape[1]//2,
+                                                      self.image.shape[0]//2))
+            augment_image[(mask == 1)] = blurred_image[(mask == 1)]
+            augment_image[mask == 0] -= epsilon
+
+        if fill_void == 'Median':
+            if len(self.image.shape) == 3:
+                augment_image[(mask == 1).all(-1)] = np.median(self.image,
+                                                               axis=(0, 1))
+            else:
+                augment_image[(mask == 1)] = np.mean(self.image)
+            augment_image[mask == 0] -= epsilon
 
         return augment_image, title
+
+
+if __name__ == '__main__':
+    dict = {'rotate': 10, 'translate':(10, 10)}
+    img = Image.open('./sdo_augmentation/example_tile.jpg')
+    img = np.array(img).astype(float) / 255
+    # for conversion to grayscale image
+    #img = np.median(img, axis=2)
+    a = Augmentations(img, dict)
+    fill_type = 'Nearest'
+    img_t, _ = a.perform_augmentations(fill_void=fill_type)
+
+    plt.subplot(1, 2, 1)
+    plt.imshow(img)
+    plt.title('Original')
+    plt.subplot(1, 2, 2)
+    plt.imshow(img_t)
+    plt.title(f'Augmented, fill type = {fill_type}')
+    plt.show()
