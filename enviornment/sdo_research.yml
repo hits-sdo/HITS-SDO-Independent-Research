@@ -1,0 +1,16 @@
+name: sdo_research
+channels:
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+    - matplotlib
+    - scikit-learn
+    - opencv-python
+    - scipy
+    - pyclustering
+    - streamlit
+    - gdown
