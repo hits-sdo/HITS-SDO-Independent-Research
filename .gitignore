@@ -6,6 +6,8 @@
 /data
 /sdo_augmentation/data
 /AIA171_Miniset_BW.tar.gz
+/aia_171_color_1perMonth.tar.gz
+/aia_171_color_1perMonth
 /AIA171_Miniset_BW
 *.p
 /.conda
