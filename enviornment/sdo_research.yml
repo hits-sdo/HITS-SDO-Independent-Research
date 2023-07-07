@@ -5,6 +5,7 @@ channels:
   - defaults
 dependencies:
   - python=3.10
+  - hdbscan
   - pip
   - pip:
     - matplotlib
@@ -14,3 +15,4 @@ dependencies:
     - pyclustering
     - streamlit
     - gdown
+    - hdbscan
