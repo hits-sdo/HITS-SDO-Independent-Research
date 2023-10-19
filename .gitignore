@@ -9,5 +9,8 @@
 /aia_171_color_1perMonth.tar.gz
 /aia_171_color_1perMonth
 /AIA171_Miniset_BW
+/src/notebooks/AIA171_Miniset_BW
+/src/notebooks/lightning_logs
+/src/notebooks/AIA171_Miniset_BW.tar.gz
 *.p
 /.conda

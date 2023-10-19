@@ -1,7 +1,20 @@
-pip
-numpy
-matplotlib
-scipy
-opencv-python
+# If using conda environments, first run:
+#   conda create --name search-ssl python=3.10 pip -c conda-forge
+#   conda activate search-ssl
+# and then
+#   pip install -r requirements.txt
+
 gdown
 hdbscan
+ipywidgets
+lightly
+lightning
+matplotlib
+opencv-python
+pyclustering
+scikit-learn
+scipy
+seaborn
+streamlit
+sunpy
+umap-learn

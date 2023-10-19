@@ -8,11 +8,17 @@ dependencies:
   - hdbscan
   - pip
   - pip:
-    - matplotlib
-    - scikit-learn
-    - opencv-python
-    - scipy
-    - pyclustering
-    - streamlit
     - gdown
     - hdbscan
+    - ipywidgets
+    - lightly
+    - lightning
+    - matplotlib
+    - opencv-python
+    - pyclustering
+    - scikit-learn
+    - scipy
+    - seaborn
+    - streamlit
+    - sunpy
+    - umap-learn
