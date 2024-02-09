@@ -1,18 +1,19 @@
-# If using conda environments, first run:
-#   conda create --name search-ssl python=3.10 pip -c conda-forge
-#   conda activate search-ssl
-# and then
-#   pip install -r requirements.txt
-
-gdown
-hdbscan
-ipywidgets
-lightly
 lightning
-matplotlib
+lightly
+sunpy
+pandas
+wandb
+ipywidgets
+plotly
 opencv-python
-pyclustering
-scikit-learn
-scipy
+scikit-learn==1.2.2
+umap-learn
+hdbscan
 seaborn
-streamlit
+git+https://github.com/hits-sdo/hits-sdo-packager.git@pip_nodata
+--extra-index-url=https://pypi.nvidia.com
+pyarrow
+pandas-gbq
+cupy-cuda11x
+cudf-cu11
+cuml-cu11
