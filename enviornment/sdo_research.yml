@@ -1,24 +1,18 @@
 name: sdo_research
 channels:
-  - nvidia
-  - conda-forge
   - defaults
 dependencies:
-  - python=3.10
-  - hdbscan
-  - pip
+  - pip=23.3.1
+  - python=3.10.13
   - pip:
-    - gdown
-    - hdbscan
-    - ipywidgets
-    - lightly
-    - lightning
-    - matplotlib
-    - opencv-python
-    - pyclustering
-    - scikit-learn
-    - scipy
-    - seaborn
-    - streamlit
-    - sunpy
-    - umap-learn
+    - beautifulsoup4==4.12.3
+    - hdbscan==0.8.33
+    - matplotlib==3.8.3
+    - numpy==1.26.4
+    - opencv-python==4.9.0.80
+    - pandas==2.2.1
+    - Pillow==10.2.0
+    - pyclustering==0.10.1.2
+    - requests==2.31.0
+    - scikit-learn==1.4.1.post1
+    - scipy==1.12.0
