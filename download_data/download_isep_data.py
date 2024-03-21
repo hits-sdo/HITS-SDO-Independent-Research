@@ -38,7 +38,7 @@ def download_and_extract(url, download_dir):
 
 if __name__ == "__main__":
     url = "https://dmlab.cs.gsu.edu/solar/data/ISEP_Data.tar.gz"
-    download_dir = "./.."
+    download_dir = "./"
 
     start_time = time.time()
     download_and_extract(url, download_dir)

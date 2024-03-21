@@ -1,9 +1,10 @@
-/.vscode
-/transformations/.vscode
-/sdo_augmentation/__pycache__
-/transformations/__pycache__
-/__pycache__
-/sdo_augmentation/data
-**/HITS-SDO-Independent-Research
 *.p
+**/HITS-SDO-Independent-Research
+/__pycache__
 /.conda
+/.vscode
+/AIA_171_Images
+/sdo_augmentation/__pycache__
+/sdo_augmentation/data
+/transformations/__pycache__
+/transformations/.vscode
