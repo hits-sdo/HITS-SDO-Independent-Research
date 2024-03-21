@@ -33,24 +33,14 @@ def power_spectrum_1d_dataset(image_directory, save_directory, data_stride):
     if data_stride > 1:
         image_paths = image_paths[::data_stride]
 
-    print("Processing images...")
-    for i in range(3):
+    for i, image_path in enumerate(image_paths):
         print(f"Processing image {i+1}/{len(image_paths)}")
-        image = PIL.Image.open(image_paths[i]).convert('L')
+        image = PIL.Image.open(image_path).convert('L')
         image = np.array(image)
         image = image.astype(np.float32) / 255
         pow_spect = power_spectrum_1d(image)
         if pow_spect.any():
             pow_spect_dataset.append(pow_spect)
-
-    # for image_path in image_paths:
-    #     image = PIL.Image.open(image_path).convert('L')
-    #     image = np.array(image)
-    #     image = image.astype(np.float32) / 255
-    #     pow_spect = power_spectrum_1d(image)
-    #     if pow_spect.any():
-    #         images.append(image)
-    #         power_spectrum_1d.append(pow_spect)
 
     print("Saving data...")
     pow_spect_dataset = np.array(pow_spect_dataset)
