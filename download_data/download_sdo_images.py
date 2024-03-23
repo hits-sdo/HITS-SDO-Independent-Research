@@ -5,6 +5,7 @@ import re
 import requests
 import time
 import urllib.parse
+from multiprocessing import Pool
 
 def fetch_image_list(url):
     with requests.Session() as session:
@@ -24,10 +25,14 @@ def download_image(image_url, image_path):
         with open(image_path, "wb") as f:
             f.write(response.content)
 
-def download_aia_images(start_date, end_date, resolution, aia_type, save_directory, n):
+def download_images(image_urls):
+    for image_url, image_path in image_urls:
+        download_image(image_url, image_path)
+        print(f"Downloaded {image_url}")
+
+def download_aia_images(start_date, end_date, resolution, aia_type, save_directory, n, thread_count):
     base_url = "https://sdo.gsfc.nasa.gov/assets/img/browse/"
     date_range = pd.date_range(start=start_date, end=end_date, freq='D')
-    image_counter = 0
     regex_pattern = re.compile(fr"(\d{{4}})?(\d{{4}})_\d{{6}}_{resolution}_{aia_type}\.jpg")
 
     for date in date_range:
@@ -39,33 +44,34 @@ def download_aia_images(start_date, end_date, resolution, aia_type, save_directo
         if not image_list:
             continue
 
+        download_urls = []
+        valid_image_count = 0
         for image_url in image_list:
-            if not regex_pattern.match(image_url.split('/')[-1]):
-                continue
+            if regex_pattern.match(image_url.split('/')[-1]):
+                valid_image_count += 1
+                if valid_image_count % n == 0:
+                    file_name = image_url.split('/')[-1]
+                    image_path = os.path.join(save_directory, year, month, day, file_name)
+                    os.makedirs(os.path.dirname(image_path), exist_ok=True)
+                    if not os.path.exists(image_path):
+                        download_urls.append((image_url, image_path))
 
-            file_name = image_url.split('/')[-1]
-            image_path = os.path.join(save_directory, year, month, day, file_name)
-            os.makedirs(os.path.dirname(image_path), exist_ok=True)
-
-            if not os.path.exists(image_path):
-                if image_counter % n == 0:
-                    print(f"Downloading {image_url}")
-                    download_image(image_url, image_path)
-                image_counter += 1
-            else:
-                print(f"Skipping {image_url} as it already exists.")
-                image_counter += 1
+        with Pool(processes=thread_count) as pool:
+            print(f"Downloading images for {year}/{month}/{day}")
+            pool.map(download_images, [download_urls[i:i+thread_count] for i in range(0, len(download_urls), thread_count)])
+            print(f"Downloaded images for {year}/{month}/{day}")
 
 if __name__ == "__main__":
-    start_date = "2014-07-01"
+    start_date = "2010-05-01"
     end_date = "2018-07-06"
-    resolution = "4096"
+    resolution = "1024"
     aia_type = "0171"
     save_directory = "./AIA_171_Images"
-    n = 10
+    n = 1
+    thread_count = 10
 
     start_time = time.time()
-    download_aia_images(start_date, end_date, resolution, aia_type, save_directory, n)
+    download_aia_images(start_date, end_date, resolution, aia_type, save_directory, n, thread_count)
     end_time = time.time()
     
     elapsed_time_seconds = end_time - start_time

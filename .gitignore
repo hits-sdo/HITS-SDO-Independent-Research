@@ -4,6 +4,8 @@
 /.conda
 /.vscode
 /AIA_171_Images
+/ISEP_Data
+/ISEP_Data.tar.gz
 /sdo_augmentation/__pycache__
 /sdo_augmentation/data
 /transformations/__pycache__
