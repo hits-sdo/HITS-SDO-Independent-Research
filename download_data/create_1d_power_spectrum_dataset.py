@@ -1,4 +1,5 @@
 import glob
+import multiprocessing
 import numpy as np
 import PIL.Image
 import scipy.stats as stats
@@ -26,21 +27,33 @@ def power_spectrum_1d(image):
 
     return a_bins
 
+def process_image(image_path):
+    image = PIL.Image.open(image_path).convert('L')
+    image = np.array(image)
+    image = image.astype(np.float32) / 255
+    pow_spect = power_spectrum_1d(image)
+    return pow_spect
+
 def power_spectrum_1d_dataset(image_directory, save_directory, data_stride):
     pow_spect_dataset = []
-    image_paths = glob.glob(image_directory + '/**/*.jpg', recursive = True)
+    image_paths = glob.glob(image_directory + '/**/*.jpg', recursive=True)
 
     if data_stride > 1:
         image_paths = image_paths[::data_stride]
 
-    for i, image_path in enumerate(image_paths):
-        print(f"Processing image {i+1}/{len(image_paths)}")
-        image = PIL.Image.open(image_path).convert('L')
-        image = np.array(image)
-        image = image.astype(np.float32) / 255
-        pow_spect = power_spectrum_1d(image)
-        if pow_spect.any():
-            pow_spect_dataset.append(pow_spect)
+    # Define a pool of worker processes
+    num_processes = multiprocessing.cpu_count()
+    pool = multiprocessing.Pool(processes=num_processes)
+
+    try:
+        # Map the processing function to image paths using parallel processing
+        pow_spect_dataset = pool.map(process_image, image_paths)
+    finally:
+        pool.close()
+        pool.join()
+
+    # Filter out empty results
+    pow_spect_dataset = [ps for ps in pow_spect_dataset if ps.any()]
 
     print("Saving data...")
     pow_spect_dataset = np.array(pow_spect_dataset)
