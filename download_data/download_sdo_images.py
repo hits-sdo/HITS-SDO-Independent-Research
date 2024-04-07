@@ -1,4 +1,5 @@
 import bs4
+import multiprocessing
 import os
 import pandas as pd
 import re
@@ -62,13 +63,13 @@ def download_aia_images(start_date, end_date, resolution, aia_type, save_directo
             print(f"Downloaded images for {year}/{month}/{day}")
 
 if __name__ == "__main__":
-    start_date = "2010-05-01"
+    start_date = "2013-04-29"
     end_date = "2018-07-06"
     resolution = "1024"
     aia_type = "0171"
     save_directory = "./AIA_171_Images"
     n = 1
-    thread_count = 10
+    thread_count = multiprocessing.cpu_count()
 
     start_time = time.time()
     download_aia_images(start_date, end_date, resolution, aia_type, save_directory, n, thread_count)

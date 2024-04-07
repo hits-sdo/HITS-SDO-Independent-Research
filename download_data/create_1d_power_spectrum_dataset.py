@@ -28,7 +28,13 @@ def power_spectrum_1d(image):
     return a_bins
 
 def process_image(image_path):
-    image = PIL.Image.open(image_path).convert('L')
+    print(f"Processing image: {image_path}")
+    try:
+        image = PIL.Image.open(image_path).convert('L')
+    except OSError as e:
+        print(f"Skipping file {image_path}, OSError: {e}")
+        return None
+    
     image = np.array(image)
     image = image.astype(np.float32) / 255
     pow_spect = power_spectrum_1d(image)
@@ -37,12 +43,15 @@ def process_image(image_path):
 def power_spectrum_1d_dataset(image_directory, save_directory, data_stride):
     pow_spect_dataset = []
     image_paths = glob.glob(image_directory + '/**/*.jpg', recursive=True)
+    print(f"Found {len(image_paths)} images.")
 
     if data_stride > 1:
         image_paths = image_paths[::data_stride]
+        print(f"Using every {data_stride}th image, resulting in {len(image_paths)} images.")
 
     # Define a pool of worker processes
     num_processes = multiprocessing.cpu_count()
+    print(f"Using {num_processes} processes for parallel processing.")
     pool = multiprocessing.Pool(processes=num_processes)
 
     try:
@@ -53,7 +62,8 @@ def power_spectrum_1d_dataset(image_directory, save_directory, data_stride):
         pool.join()
 
     # Filter out empty results
-    pow_spect_dataset = [ps for ps in pow_spect_dataset if ps.any()]
+    pow_spect_dataset = [ps for ps in pow_spect_dataset if ps is not None and ps.any()]
+    print(f"Finished processing. Total successful power spectra calculated: {len(pow_spect_dataset)}")
 
     print("Saving data...")
     pow_spect_dataset = np.array(pow_spect_dataset)
