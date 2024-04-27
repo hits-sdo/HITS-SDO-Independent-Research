@@ -5,7 +5,7 @@
 *nohup.out*
 /.conda
 /.vscode
-/1d_power_spectrum_dataset.npy
+/1d_power_spectrum_dataset.npz
 /AIA_171_Images
 /ISEP_Data
 /ISEP_Data.tar.gz

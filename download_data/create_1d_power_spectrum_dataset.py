@@ -77,11 +77,12 @@ def power_spectrum_1d_dataset(image_directory, flare_csv_file, save_directory, d
     try:
         # Use starmap for clarity with argument passing
         result = pool.starmap(process_image, [(path, flare_data, counter, total_images) for path in image_paths])
+
     finally:
         pool.close()
         pool.join()
 
-    dataset = [item for item in result if item is not None and np.any(item[0])]
+    dataset = [item for item in result if item is not None and len(item[0]) == 2048 and np.ndim(item[1]) == 0 and np.ndim(item[2]) == 0]
 
     print("Saving data...")
     if os.path.exists(save_directory):
