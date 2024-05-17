@@ -6,6 +6,7 @@ dependencies:
   - python=3.10.13
   - pip:
     - beautifulsoup4==4.12.3
+    - gdown==5.2.0
     - hdbscan==0.8.33
     - matplotlib==3.8.3
     - numpy==1.26.4
