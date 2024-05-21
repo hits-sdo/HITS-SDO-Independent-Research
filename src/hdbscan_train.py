@@ -12,15 +12,20 @@ def wasserstein(x, y):
 
 def main():
     start_time = time.time()
+    np.random.seed(42)
+    n = 10000
     
     # Load the data from 1d_power_spectrum_dataset.npz
     print('Loading data')
     with np.load('aia171_miniset_pow_spect.npz') as data:
         pow_spect = data['pow_spect']
-    np.random.seed(42)
-    np.random.shuffle(pow_spect)
-    pow_spect = pow_spect[:10000]
-
+        images = data['images']
+    perm = np.random.permutation(len(pow_spect))
+    pow_spect = pow_spect[perm]
+    pow_spect = pow_spect[:n]
+    images = images[perm]
+    images = images[:n]
+    
     # Create and run an instance of HDBSCAN
     print('Running HDBSCAN clustering')
     clusterer = hdbscan.HDBSCAN(min_cluster_size=100, gen_min_span_tree=True, metric=wasserstein, core_dist_n_jobs=-1)
@@ -35,12 +40,13 @@ def main():
     embedded_pow_spect = (embedded_pow_spect - x_min) / (x_max - x_min)
 
     # Save the fitted HDBSCAN model
+    data = {'clusterer': clusterer, 'pow_spect': pow_spect, 'images': images}
     now = datetime.now()
     datetime_string = now.strftime("%Y%m%d_%H%M%S")
     model_filename = f'hdbscan_model_{datetime_string}.pkl'
     print(f'Saving the HDBSCAN model to {model_filename}')
     with open(model_filename, 'wb') as model_file:
-        pickle.dump(clusterer, model_file)
+        pickle.dump(data, model_file)
 
     # Plot the clusters and save the figure as a PNG file
     image_filename = f'hdbscan_clustering_{datetime_string}.png'
