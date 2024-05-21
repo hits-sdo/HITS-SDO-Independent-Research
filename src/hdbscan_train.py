@@ -1,6 +1,7 @@
 import hdbscan
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import pickle
 import scipy.stats as stats
 import time
@@ -39,17 +40,22 @@ def main():
     x_min = np.min(embedded_pow_spect, axis=0)
     embedded_pow_spect = (embedded_pow_spect - x_min) / (x_max - x_min)
 
-    # Save the fitted HDBSCAN model
+    # Create the directory if it doesn't exist
+    directory = 'hdbscan_clusterers'
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    # Save the fitted HDBSCAN model in the folder
     data = {'clusterer': clusterer, 'pow_spect': pow_spect, 'images': images}
     now = datetime.now()
     datetime_string = now.strftime("%Y%m%d_%H%M%S")
-    model_filename = f'hdbscan_model_{datetime_string}.pkl'
+    model_filename = f'{directory}/hdbscan_model_{datetime_string}.pkl'
     print(f'Saving the HDBSCAN model to {model_filename}')
     with open(model_filename, 'wb') as model_file:
         pickle.dump(data, model_file)
 
     # Plot the clusters and save the figure as a PNG file
-    image_filename = f'hdbscan_clustering_{datetime_string}.png'
+    image_filename = f'{directory}/hdbscan_clustering_{datetime_string}.png'
     print(f'Saving cluster image to {image_filename}')
     plt.scatter(embedded_pow_spect[:, 0], embedded_pow_spect[:, 1], c=labels)
     plt.title('HDBSCAN Clustering with EMD Metric')
