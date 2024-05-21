@@ -15,8 +15,11 @@ def main():
     
     # Load the data from 1d_power_spectrum_dataset.npz
     print('Loading data')
-    data = np.load('aia171_miniset_pow_spect.npz')
-    pow_spect = data['pow_spect'][:100]
+    with np.load('aia171_miniset_pow_spect.npz') as data:
+        pow_spect = data['pow_spect']
+    np.random.seed(42)
+    np.random.shuffle(pow_spect)
+    pow_spect = pow_spect[:10000]
 
     # Create and run an instance of HDBSCAN
     print('Running HDBSCAN clustering')
