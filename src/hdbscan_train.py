@@ -29,13 +29,13 @@ def main():
     
     # Create and run an instance of HDBSCAN
     print('Running HDBSCAN clustering')
-    clusterer = hdbscan.HDBSCAN(min_cluster_size=100, gen_min_span_tree=True, metric=wasserstein, core_dist_n_jobs=-1)
+    clusterer = hdbscan.HDBSCAN(min_cluster_size=100, gen_min_span_tree=True, metric=wasserstein)
     clusterer.fit(pow_spect)
     labels = clusterer.labels_
 
     # Perform dimensionality reduction on the power spectrum data
     print('Performing t-SNE dimensionality reduction')
-    embedded_pow_spect = TSNE(metric=wasserstein, n_jobs=-1).fit_transform(pow_spect)
+    embedded_pow_spect = TSNE(metric=wasserstein).fit_transform(pow_spect)
     x_max = np.max(embedded_pow_spect, axis=0)
     x_min = np.min(embedded_pow_spect, axis=0)
     embedded_pow_spect = (embedded_pow_spect - x_min) / (x_max - x_min)

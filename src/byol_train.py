@@ -47,7 +47,7 @@ seed = 12345
 pl.seed_everything(seed, workers=True)
 
 # Defining global variables for the training process
-data_path = os.path.abspath('./AIA_171_Images')
+data_path = os.path.abspath('./AIA171_Miniset_BW')
 epochs = 16
 data_stride = 1
 batch_size = 64
@@ -170,7 +170,6 @@ if __name__ == "__main__":
     model = BYOL(lr=learning_rate, projection_size=projection_size, prediction_size=prediction_size, cosine_scheduler_start=cosine_scheduler_start, cosine_scheduler_end=cosine_scheduler_end, epochs=epochs, loss=loss)
 
     dataset = SDOTilesDataset(data_path=data_path, augmentation=augmentation, data_stride=data_stride)
-
     dataloader = torch.utils.data.DataLoader(
         dataset,
         batch_size=batch_size,
